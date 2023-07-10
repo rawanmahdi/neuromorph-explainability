@@ -1,4 +1,3 @@
-#%%
 import torch
 import pandas as pd
 import mne
@@ -59,16 +58,10 @@ class ToSpikes(object):
         encoded_eeg = spikegen.delta(eeg, self.threshold)
         return {'eeg': encoded_eeg, 'annotations': sample['annotations']}
 
-# class ToTensor(object):
-#     """Convert ndarrays in sample to Tensors."""
+class Reshape(object):
+    def __call__(self, sample):
+        eeg, annotations = sample['eeg'], sample['annotations']
+        eeg = torch.reshape(eeg, (eeg.shape[0], 256, int(eeg.shape[1]/256)))
+        return {'eeg': eeg, 'annotations': annotations}
 
-#     def __call__(self, sample):
-#         eeg, annotations = sample['eeg'], sample['annotation']
-#         return {'eeg': torch.from_numpy(eeg),
-#                 'landmarks': torch.from_numpy(landmarks)}
-#%%
-annot_csv = '../../data/annotations/annotations_2017_C.csv'
-eeg_dir = '../../data/neonatal-eeg-edf'
-Dataset = EEG_Dataset(annot_csv, eeg_dir, transform=transforms.Compose(ToSpikes(0.001)))
-# %%
-"C:\Users\Rawan Alamily\Downloads\McSCert Co-op\data\annotations\annotations_2017_C.csv"
+

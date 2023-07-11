@@ -6,7 +6,7 @@ from torch.utils.data import Dataset
 from snntorch import spikegen
 from torchvision import transforms
 
-class EEG_Dataset(Dataset):
+class EEGDataset(Dataset):
     def __init__(self, annotations_file, eeg_dir, transform):
         self.annotations = pd.read_csv(annotations_file)
         self.eeg_dir = eeg_dir
@@ -27,8 +27,8 @@ class EEG_Dataset(Dataset):
         """
         eeg_path = os.path.join(self.eeg_dir, 'eeg'+str(idx)+'.edf')
         raw_eeg = mne.io.read_raw_edf(eeg_path)
-        eeg = torch.tensor(raw_eeg.get_data())
-        annotations = torch.tensor(self.annotations[str(idx)].dropna().values)
+        eeg = torch.tensor(raw_eeg.get_data(), dtype=torch.float32)
+        annotations = torch.tensor(self.annotations[str(idx)].dropna().values, dtype=torch.long)
         sample = {'eeg': eeg, 'annotations':annotations}
         if self.transform:
             sample = self.transform(sample)

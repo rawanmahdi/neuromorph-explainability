@@ -28,7 +28,7 @@ class EEGDataset(Dataset):
         eeg_path = os.path.join(self.eeg_dir, 'eeg'+str(idx)+'.edf')
         raw_eeg = mne.io.read_raw_edf(eeg_path)
         eeg = torch.tensor(raw_eeg.get_data(), dtype=torch.float32)
-        annotations = torch.tensor(self.annotations[str(idx)].dropna().values, dtype=torch.long)
+        annotations = torch.tensor(self.annotations[str(idx)].dropna().values, dtype=torch.float32)
         sample = {'eeg': eeg, 'annotations':annotations}
         if self.transform:
             sample = self.transform(sample)
